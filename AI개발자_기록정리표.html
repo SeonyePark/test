@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 개발자 기록정리표</title>
+<style>
+  :root {
+    --navy: #0B2545; --blue: #1E6FD9; --sky: #4FB3F6; --pale: #EAF4FD;
+    --line: #C9DDF2; --yellow: #F5B700; --text: #0B2545; --muted: #4A6385;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #F3F8FD; color: var(--text);
+    font-family: "Freesentation", "Pretendard", "Malgun Gothic", sans-serif;
+    font-size: 15px; line-height: 1.5;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 80px; }
+
+  header.top {
+    background: var(--navy); color: #fff; border-radius: 14px; padding: 22px 24px;
+    background-image:
+      linear-gradient(rgba(79,179,246,.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,179,246,.15) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  header.top .sub { color: var(--sky); font-weight: 700; font-size: 14px; }
+  header.top h1 { margin: 4px 0 14px; font-size: 28px; }
+  .meta { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .meta label { color: #BFE0FB; font-size: 13px; }
+  .meta input { background: rgba(255,255,255,.95); }
+
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0 6px; }
+  button {
+    font: inherit; font-weight: 700; border: 0; border-radius: 8px; cursor: pointer;
+    padding: 9px 16px; background: var(--blue); color: #fff;
+  }
+  button.ghost { background: #fff; color: var(--blue); border: 1.5px solid var(--blue); }
+  button.small { padding: 6px 12px; font-size: 13px; }
+  .saved { color: var(--muted); font-size: 13px; align-self: center; }
+
+  section {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 20px 22px; margin-top: 18px;
+  }
+  .sec-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .tag {
+    background: var(--blue); color: #fff; font-weight: 700; font-size: 13px;
+    padding: 3px 10px; border-radius: 20px; white-space: nowrap;
+  }
+  .tag.y { background: var(--yellow); color: var(--navy); }
+  h2 { margin: 0; font-size: 21px; }
+  h3 { margin: 18px 0 8px; font-size: 16px; color: var(--blue); }
+  .hint { color: var(--muted); font-size: 13px; margin: -6px 0 10px; }
+
+  label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  input, textarea, select {
+    width: 100%; font: inherit; color: var(--text); background: var(--pale);
+    border: 1.5px solid transparent; border-radius: 8px; padding: 8px 10px;
+  }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--sky); background: #fff; }
+  textarea { resize: none; overflow: hidden; min-height: 42px; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .row { display: grid; grid-template-columns: 110px 1fr; gap: 10px; align-items: start; margin-bottom: 8px; }
+  .row > .k {
+    background: var(--blue); color: #fff; font-weight: 700; border-radius: 8px;
+    padding: 9px 6px; text-align: center; font-size: 14px;
+  }
+  .row > .k.y { background: var(--yellow); color: var(--navy); }
+
+  .member { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+
+  .flow { display: grid; grid-template-columns: 1fr 22px 1fr 22px 1fr; gap: 6px; align-items: stretch; }
+  .flow .box { border: 1.5px solid var(--blue); border-radius: 10px; padding: 8px; background: var(--pale); }
+  .flow .box input { background: #fff; margin-bottom: 6px; font-weight: 700; }
+  .flow .box textarea { background: #fff; }
+  .tri { width: 0; height: 0; border-top: 9px solid transparent; border-bottom: 9px solid transparent;
+         border-left: 13px solid var(--sky); align-self: center; justify-self: center; }
+
+  .prompt-out {
+    background: var(--navy); color: #fff; border-radius: 10px; padding: 14px 16px;
+    white-space: pre-wrap; min-height: 80px; font-size: 15px;
+  }
+  .prompt-out.empty { color: #8FA8C8; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th { background: var(--blue); color: #fff; font-size: 14px; padding: 8px; text-align: left; }
+  th:first-child { border-radius: 8px 0 0 0; } th:last-child { border-radius: 0 8px 0 0; }
+  td { padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td.n { width: 36px; text-align: center; font-weight: 700; color: var(--blue); padding-top: 14px; }
+  td.r { width: 120px; }
+  td.del { width: 34px; }
+  .x { background: none; color: #9AB; padding: 8px 6px; font-size: 16px; }
+
+  .check { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+  .check label { font-weight: 400; display: flex; gap: 8px; align-items: center; margin: 0; }
+  .check input { width: 18px; height: 18px; accent-color: var(--blue); }
+
+  @media (max-width: 640px) {
+    .meta, .grid2, .grid3, .check { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: 1fr; }
+    .tri { transform: rotate(90deg); }
+    .row { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    @page { size: A4; margin: 12mm; }
+    body { background: #fff; font-size: 12.5px; }
+    .wrap { padding: 0; max-width: none; }
+    .toolbar, .no-print, .x, td.del { display: none !important; }
+    section { border: 1px solid #9DBBE0; break-inside: auto; margin-top: 10px; padding: 12px 14px; }
+    section.pb { break-before: page; }
+    .row, .member, .flow, tr, .grid2 > div, .grid3 > div, .prompt-out, .check { break-inside: avoid; }
+    section.keep { break-inside: avoid; }
+    ::placeholder { color: transparent; }
+    input, textarea, select { background: #fff; border: 1px solid #C9DDF2; }
+    select { appearance: none; }
+    header.top, .row > .k, th, .tag, .prompt-out, .flow .box {
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="sub">기획하고 만드는 AI 개발자 체험</div>
+    <h1>우리 팀 기록정리표</h1>
+    <div class="meta">
+      <div><label for="school">학교 · 학과</label><input id="school" data-k="school"></div>
+      <div><label for="cls">학년 · 반</label><input id="cls" data-k="cls"></div>
+      <div><label for="date">날짜</label><input id="date" data-k="date" type="date"></div>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <button id="btnPdf">PDF로 저장 · 인쇄</button>
+    <button class="ghost" id="btnReset">처음부터 다시 쓰기</button>
+    <span class="saved" id="saved">입력한 내용은 이 컴퓨터에 자동 저장돼요</span>
+  </div>
+
+  <!-- 1. 팀 정보 -->
+  <section>
+    <div class="sec-head"><span class="tag">1차시</span><h2>우리 팀 만들기</h2></div>
+    <div class="row"><div class="k">팀 이름</div><input data-k="team" placeholder="예) 버그헌터즈"></div>
+    <div class="row"><div class="k">이름의 뜻</div><textarea data-k="teamMeaning" placeholder="팀 이름에 담은 뜻"></textarea></div>
+    <h3>팀원과 역할</h3>
+    <p class="hint">기획 리더 · 개발 담당 · 디자인 담당 · 발표 담당 (인원이 적으면 겸하기)</p>
+    <div id="members"></div>
+  </section>
+
+  <!-- 2. 아이디어 -->
+  <section>
+    <div class="sec-head"><span class="tag">1차시</span><span class="tag y">MISSION 1</span><h2>아이디어 초안</h2></div>
+    <div class="row"><div class="k">주제 분야</div>
+      <select data-k="area">
+        <option value="">선택하기</option><option>학교생활</option><option>공부 · 진로</option>
+        <option>게임 · 재미</option><option>일상</option><option>기타</option>
+      </select>
+    </div>
+    <div class="row"><div class="k">누가</div><textarea data-k="who" placeholder="타깃 사용자"></textarea></div>
+    <div class="row"><div class="k">무엇이</div><textarea data-k="what" placeholder="불편한 점 또는 만들고 싶은 재미"></textarea></div>
+    <div class="row"><div class="k">왜</div><textarea data-k="why" placeholder="그 문제가 생기는 이유"></textarea></div>
+    <div class="row"><div class="k">어떻게</div><textarea data-k="how" placeholder="해결 아이디어"></textarea></div>
+  </section>
+
+  <!-- 3. 기획 메모 -->
+  <section class="pb">
+    <div class="sec-head"><span class="tag">2차시</span><span class="tag y">MISSION 2</span><h2>서비스 기획 메모</h2></div>
+    <div class="row"><div class="k">서비스 이름</div><input data-k="svc" placeholder="기억하기 쉽고 기능이 드러나게"></div>
+    <h3>핵심 기능 3개</h3>
+    <p class="hint">동사로 쓰기 예) 문제를 낸다, 채점한다, 점수를 보여준다</p>
+    <div class="grid3">
+      <div><label>기능 ①</label><textarea data-k="f1"></textarea></div>
+      <div><label>기능 ②</label><textarea data-k="f2"></textarea></div>
+      <div><label>기능 ③</label><textarea data-k="f3"></textarea></div>
+    </div>
+    <h3>화면 흐름 (UX)</h3>
+    <div class="flow">
+      <div class="box"><input data-k="s1n" placeholder="화면 1 이름"><textarea data-k="s1" placeholder="무엇이 보이나요?"></textarea></div>
+      <div class="tri"></div>
+      <div class="box"><input data-k="s2n" placeholder="화면 2 이름"><textarea data-k="s2" placeholder="무엇이 보이나요?"></textarea></div>
+      <div class="tri"></div>
+      <div class="box"><input data-k="s3n" placeholder="화면 3 이름"><textarea data-k="s3" placeholder="무엇이 보이나요?"></textarea></div>
+    </div>
+  </section>
+
+  <!-- 4. 최종 프롬프트 -->
+  <section>
+    <div class="sec-head"><span class="tag">2차시</span><span class="tag y">MISSION 3</span><h2>Gemini에 넣을 요청문</h2></div>
+    <p class="hint">6가지 재료를 채우면 아래에 요청문이 자동으로 만들어져요</p>
+    <div class="row"><div class="k">무엇을</div><input data-k="pWhat" placeholder="예) 영단어 퀴즈 게임"></div>
+    <div class="row"><div class="k">누구를 위해</div><input data-k="pWho" placeholder="예) 시험 준비하는 고등학생"></div>
+    <div class="row"><div class="k">핵심 기능</div><textarea data-k="pFunc" placeholder="비워 두면 기획 메모의 기능 3개를 사용해요"></textarea></div>
+    <div class="row"><div class="k">화면 디자인</div><input data-k="pDesign" placeholder="예) 밝은 파란색, 큰 글씨"></div>
+    <div class="row"><div class="k y">조작 방식</div>
+      <select data-k="pCtrl">
+        <option value="">선택하기</option>
+        <option>마우스 클릭과 터치로 조작</option>
+        <option>키보드로 조작</option>
+        <option>키보드로도 조작되고, 휴대폰에서는 화면 버튼을 터치해서 조작</option>
+      </select>
+    </div>
+    <div class="row"><div class="k">조건</div><input data-k="pCond" placeholder="예) 휴대폰에서도 잘 보이게"></div>
+    <h3>완성된 요청문</h3>
+    <div class="prompt-out empty" id="promptOut">재료를 입력하면 여기에 나타나요</div>
+    <div class="toolbar no-print"><button class="small" id="btnCopy">요청문 복사</button></div>
+  </section>
+
+  <!-- 5. 수정 기록 -->
+  <section class="keep">
+    <div class="sec-head"><span class="tag">2~3차시</span><h2>수정 요청 기록</h2></div>
+    <p class="hint">같은 채팅창에서 한 번에 하나씩, 구체적으로 요청하기</p>
+    <table>
+      <thead><tr><th>#</th><th>수정 요청 내용</th><th>결과</th><th class="del no-print"></th></tr></thead>
+      <tbody id="edits"></tbody>
+    </table>
+    <div class="toolbar no-print"><button class="small ghost" id="btnAddEdit">+ 수정 기록 추가</button></div>
+  </section>
+
+  <!-- 6. 최종 점검 -->
+  <section class="pb">
+    <div class="sec-head"><span class="tag">3차시</span><span class="tag y">MISSION 4</span><h2>최종 점검</h2></div>
+    <div class="check" id="checks"></div>
+    <h3>최종 결과물</h3>
+    <div class="grid2">
+      <div><label>HTML 파일 이름</label><input data-k="fileName" placeholder="예) 버그헌터즈.html"></div>
+      <div><label>공유 링크 (있으면)</label><input data-k="link" placeholder="https://"></div>
+    </div>
+  </section>
+
+  <!-- 7. 발표 -->
+  <section>
+    <div class="sec-head"><span class="tag">3차시</span><h2>발표 준비 (3~4분)</h2></div>
+    <div class="row"><div class="k">문제 소개<br>30초</div><textarea data-k="prProblem" placeholder="누가, 무엇이 불편한가?"></textarea></div>
+    <div class="row"><div class="k">시연<br>2분</div><textarea data-k="prDemo" placeholder="어떤 순서로 보여줄까?"></textarea></div>
+    <div class="row"><div class="k">기대 효과<br>30초</div><textarea data-k="prEffect" placeholder="사용하면 무엇이 좋아지나?"></textarea></div>
+    <div class="row"><div class="k">예상 질문<br>30초</div><textarea data-k="prQna" placeholder="받을 것 같은 질문과 답"></textarea></div>
+    <h3>받은 피드백</h3>
+    <div class="grid2">
+      <div><label>칭찬</label><textarea data-k="fbGood"></textarea></div>
+      <div><label>제안</label><textarea data-k="fbIdea"></textarea></div>
+    </div>
+  </section>
+
+  <!-- 8. 진로 -->
+  <section class="keep">
+    <div class="sec-head"><span class="tag">3차시</span><h2>나의 진로 정리 + 소감</h2></div>
+    <div class="row"><div class="k">Q1</div><div><label>가장 재미있었던 역할은?</label><textarea data-k="q1"></textarea></div></div>
+    <div class="row"><div class="k">Q2</div><div><label>더 알아보고 싶은 직업과 이유는?</label><textarea data-k="q2"></textarea></div></div>
+    <div class="row"><div class="k">Q3</div><div><label>내 전공과 연결한다면 어떤 AI 서비스를 만들까?</label><textarea data-k="q3"></textarea></div></div>
+    <div class="row"><div class="k">소감</div><textarea data-k="review"></textarea></div>
+  </section>
+
+</div>
+
+<script>
+  const KEY = "gibalja-record-v1";
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { data = {}; }
+
+  const ROLES = ["기획 리더", "개발 담당", "디자인 담당", "발표 담당"];
+  const CHECKS = ["핵심 기능 3개가 모두 동작하나요?", "버튼을 눌렀을 때 결과가 바로 보이나요?",
+    "처음 보는 사람도 사용법을 알 수 있나요?", "글씨와 색이 잘 보이나요?",
+    "휴대폰 화면에서도 깨지지 않나요?", "휴대폰에서 터치로 조작되나요?"];
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+  }
+  function grow(el) {
+    if (el.tagName !== "TEXTAREA") return;
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + 2 + "px";
+  }
+  function bind(el) {
+    const k = el.dataset.k;
+    if (el.type === "checkbox") {
+      el.checked = !!data[k];
+      el.addEventListener("change", () => { data[k] = el.checked; save(); });
+      return;
+    }
+    if (data[k] !== undefined) el.value = data[k];
+    const on = () => { data[k] = el.value; grow(el); save(); buildPrompt(); };
+    el.addEventListener("input", on);
+    el.addEventListener("change", on);
+    requestAnimationFrame(() => grow(el));
+  }
+
+  // 팀원
+  const members = document.getElementById("members");
+  ROLES.forEach((role, i) => {
+    const d = document.createElement("div");
+    d.className = "member";
+    d.innerHTML = `<input data-k="m${i}name" placeholder="이름">` +
+      `<input data-k="m${i}role" placeholder="역할">`;
+    members.appendChild(d);
+    if (data[`m${i}role`] === undefined) data[`m${i}role`] = role;
+  });
+
+  // 점검표
+  const checks = document.getElementById("checks");
+  CHECKS.forEach((c, i) => {
+    const l = document.createElement("label");
+    l.innerHTML = `<input type="checkbox" data-k="c${i}">${c}`;
+    checks.appendChild(l);
+  });
+
+  // 수정 기록
+  const edits = document.getElementById("edits");
+  if (!Array.isArray(data.edits) || data.edits.length === 0) data.edits = [{}, {}, {}];
+  function renderEdits() {
+    edits.innerHTML = "";
+    data.edits.forEach((row, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="n">${i + 1}</td>
+        <td><textarea placeholder="예) 시간이 갈수록 빨라지게 해 줘"></textarea></td>
+        <td class="r"><select><option value="">선택</option><option>잘 됨</option><option>일부 됨</option><option>안 됨</option></select></td>
+        <td class="del"><button class="x" title="삭제">×</button></td>`;
+      const ta = tr.querySelector("textarea"), sel = tr.querySelector("select");
+      ta.value = row.req || ""; sel.value = row.res || "";
+      ta.addEventListener("input", () => { row.req = ta.value; grow(ta); save(); });
+      sel.addEventListener("change", () => { row.res = sel.value; save(); });
+      tr.querySelector(".x").addEventListener("click", () => {
+        data.edits.splice(i, 1);
+        if (data.edits.length === 0) data.edits.push({});
+        save(); renderEdits();
+      });
+      edits.appendChild(tr);
+      requestAnimationFrame(() => grow(ta));
+    });
+  }
+  renderEdits();
+  document.getElementById("btnAddEdit").addEventListener("click", () => {
+    data.edits.push({}); save(); renderEdits();
+  });
+
+  document.querySelectorAll("[data-k]").forEach(bind);
+
+  // 요청문 만들기
+  const out = document.getElementById("promptOut");
+  function buildPrompt() {
+    const v = k => (data[k] || "").trim();
+    const funcs = v("pFunc") || [v("f1"), v("f2"), v("f3")].filter(Boolean).map((f, i) => `${i + 1}) ${f}`).join("\n");
+    const lines = [];
+    if (v("pWhat")) lines.push(`${v("pWhat")}${v("svc") ? ` '${v("svc")}'` : ""}을(를) 만들어 줘.`);
+    if (v("pWho")) lines.push(`사용자: ${v("pWho")}`);
+    if (funcs) lines.push(`기능:\n${funcs}`);
+    const flow = [1, 2, 3].map(n => v(`s${n}n`)).filter(Boolean);
+    if (flow.length) lines.push(`화면 순서: ${flow.join(" → ")}`);
+    if (v("pDesign")) lines.push(`디자인: ${v("pDesign")}`);
+    if (v("pCtrl")) lines.push(`조작: ${v("pCtrl")}`);
+    if (v("pCond")) lines.push(`조건: ${v("pCond")}`);
+    const text = lines.join("\n");
+    out.textContent = text || "재료를 입력하면 여기에 나타나요";
+    out.classList.toggle("empty", !text);
+    return text;
+  }
+  buildPrompt();
+
+  document.getElementById("btnCopy").addEventListener("click", async (e) => {
+    const text = buildPrompt();
+    if (!text) return;
+    try { await navigator.clipboard.writeText(text); }
+    catch (err) {
+      const t = document.createElement("textarea");
+      t.value = text; document.body.appendChild(t); t.select();
+      document.execCommand("copy"); t.remove();
+    }
+    e.target.textContent = "복사 완료!";
+    setTimeout(() => e.target.textContent = "요청문 복사", 1500);
+  });
+
+  document.getElementById("btnPdf").addEventListener("click", () => {
+    document.querySelectorAll("textarea").forEach(grow);
+    const team = (data.team || "").trim();
+    const old = document.title;
+    if (team) document.title = `${team}_기록정리표`;
+    window.print();
+    document.title = old;
+  });
+  window.addEventListener("beforeprint", () => document.querySelectorAll("textarea").forEach(grow));
+
+  document.getElementById("btnReset").addEventListener("click", () => {
+    if (!confirm("입력한 내용을 모두 지울까요? 되돌릴 수 없어요.")) return;
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    location.reload();
+  });
+</script>
+</body>
+</html>
